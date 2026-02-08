@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     buildConnections();
+    emit ui->scan_pushButton->clicked(); // trigger initial scan
 }
 
 MainWindow::~MainWindow()
@@ -147,7 +148,20 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
         ui->track_lineEdit->setText(message.value("track").toString());
         emit fetch(message.value("albumart_url").toString());
     } else if(request == "system/getLocationInfo") {
-        auto zoneList = message.value("zone_list");
+        auto zoneList = message.value("zone_list");    
+    } else if(request == "main/getStatus") {
+        if(message.value("power").toString() == "on") {
+            ui->on_radioButton->setChecked(true);
+        } else {
+            ui->off_radioButton->setChecked(true);
+        }
+        ui->volume_horizontalScrollBar->setMaximum(message.value("max_volume").toInt());
+        ui->volume_horizontalScrollBar->setValue(message.value("volume").toInt());
+        if(message.value("mute").toBool()) {
+            ui->mute_radioButton->setChecked(true);
+        } else {
+            ui->unmute_radioButton->setChecked(true);
+        }
     }
     else 
     {

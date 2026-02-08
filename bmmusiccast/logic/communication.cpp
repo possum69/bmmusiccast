@@ -16,8 +16,10 @@ Communication::Communication(/* args */)
     networkManager_ = new QNetworkAccessManager();
     auto* thread = QThread::create([this] {
         while (true) {
+            emit this->update("main/getStatus");
+            QThread::msleep(2000);
             emit this->update("netusb/getPlayInfo");
-            QThread::msleep(5000);
+            QThread::msleep(2000);
         }
     });
     connect(this, &Communication::update, this, &Communication::executeCmd);
