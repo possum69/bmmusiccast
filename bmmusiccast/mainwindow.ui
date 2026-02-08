@@ -88,6 +88,13 @@
            <widget class="QLineEdit" name="artist_lineEdit"/>
           </item>
           <item>
+           <widget class="QLabel" name="albumArtLabel">
+            <property name="text">
+             <string>Album:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLineEdit" name="album_lineEdit"/>
           </item>
           <item>

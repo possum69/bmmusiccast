@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QTcpSocket>
 #include <QThread>
+#include <QImage>
 
 Communication::Communication(/* args */)
 {
@@ -135,7 +136,7 @@ void Communication::executeCmd(const QString& cmd)
     
             QJsonDocument doc = QJsonDocument::fromJson(data);  
             if (doc.isObject()) {
-                qDebug() << "Response from" << QHostAddress(m_devices[m_selectedDeviceIndex]).toString() << "for command" << cmd << ":" << QString(data);
+                //qDebug() << "Response from" << QHostAddress(m_devices[m_selectedDeviceIndex]).toString() << "for command" << cmd << ":" << QString(data);
 
                 // Valid Yamaha response
                 if (doc.object().contains("response_code") && doc.object().value("response_code").toInt() == 0) {
@@ -153,3 +154,33 @@ void Communication::executeCmd(const QString& cmd)
 
     });
 }
+
+void Communication::downloadAlbumArt(const QString &albumart_url) {
+    if (m_selectedDeviceIndex < 0 || m_selectedDeviceIndex >= m_devices.size()) {
+        emit message("No device selected.");
+        return;
+    } else if (albumart_url.isEmpty()) {
+        emit message("No album art URL provided.");
+        return;
+    } else if (albumart_url == lastAlbumArtUrl) {
+        //emit message("Album art already up to date.");
+        return;
+    }
+    qDebug() << "Downloading album art from URL:" << albumart_url;
+    QUrl url(QString("http://%1%2").arg(m_devices[m_selectedDeviceIndex].toString()).arg(albumart_url));
+
+    QNetworkRequest request(url);
+    auto *reply = networkManager_->get(request);
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply, albumart_url]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray data = reply->readAll();
+            QImage img;
+            img.loadFromData(data, "PNG");
+            emit albumArtReady(img);
+            lastAlbumArtUrl = albumart_url;
+        }
+        reply->deleteLater();
+    });
+}
+

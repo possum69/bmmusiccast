@@ -32,6 +32,7 @@ private slots:
     
 signals:
     void executeCmd(const QString& cmd);
+    void fetch(const QString& albumart_url);
 
 private:
     Ui::MainWindow *ui;

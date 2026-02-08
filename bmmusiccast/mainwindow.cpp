@@ -23,9 +23,7 @@ MainWindow::~MainWindow()
 void MainWindow::buildConnections() {
     // General
     connect(this, &MainWindow::executeCmd, communication_, &Communication::executeCmd);
-
-
-    
+   
     // Device
     connect(ui->scan_pushButton, &QPushButton::clicked, this, &MainWindow::resetDeviceList);
     connect(ui->scan_pushButton, &QPushButton::clicked, this, [this] {
@@ -70,7 +68,15 @@ void MainWindow::buildConnections() {
 
     // Presets
     connect(ui->preset_listWidget, &QListWidget::currentRowChanged, this, [this](int currentRow) {        
+        ui->albumArtLabel->setText("Album:");
         emit executeCmd(QString("netusb/recallPreset?zone=%1&num=%2").arg(m_currentzone).arg(currentRow+1));
+    });
+
+    // Album art
+    connect(this, &MainWindow::fetch, communication_, &Communication::downloadAlbumArt);
+    connect(communication_, &Communication::albumArtReady, this, [this](const QImage &img) {
+        QPixmap pixmap = QPixmap::fromImage(img);
+        ui->albumArtLabel->setPixmap(pixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     });
 
 }
@@ -139,6 +145,7 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
         ui->artist_lineEdit->setText(message.value("artist").toString());
         ui->album_lineEdit->setText(message.value("album").toString());
         ui->track_lineEdit->setText(message.value("track").toString());
+        emit fetch(message.value("albumart_url").toString());
     } else if(request == "system/getLocationInfo") {
         auto zoneList = message.value("zone_list");
     }
