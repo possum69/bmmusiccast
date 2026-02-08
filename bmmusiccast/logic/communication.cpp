@@ -101,8 +101,11 @@ void Communication::queryDevice(const QHostAddress &addr)
 
 void Communication::selectDevice(int index) {
     m_selectedDeviceIndex = index;
-    qDebug() << "Selected device index:" << index << "of" << m_devices.size();
+    //qDebug() << "Selected device index:" << index << "of" << m_devices.size();
     executeCmd("system/getFeatures");
+    executeCmd("netusb/getPresetInfo");
+    executeCmd("netusb/getPlayInfo");
+    executeCmd("system/getLocationInfo");
 }
 
 
@@ -124,7 +127,8 @@ void Communication::executeCmd(const QString& cmd)
     
             QJsonDocument doc = QJsonDocument::fromJson(data);  
             if (doc.isObject()) {
-                qDebug() << "Response from" << QHostAddress(m_devices[m_selectedDeviceIndex]).toString() << "for command" << cmd << ":" << doc.toJson(QJsonDocument::Compact);
+                qDebug() << "Response from" << QHostAddress(m_devices[m_selectedDeviceIndex]).toString() << "for command" << cmd << ":" << QString(data);
+
                 // Valid Yamaha response
                 if (doc.object().contains("response_code") && doc.object().value("response_code").toInt() == 0) {
                     emit message(QString("Command %2 executed successfully on %1").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd));

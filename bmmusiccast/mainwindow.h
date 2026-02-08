@@ -37,5 +37,6 @@ private:
     Ui::MainWindow *ui;
     Communication* communication_;
     void buildConnections();
+    QString m_currentzone = "main";
 };
 #endif // MAINWINDOW_H

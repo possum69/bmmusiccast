@@ -21,26 +21,37 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::buildConnections() {
+    // General
     connect(this, &MainWindow::executeCmd, communication_, &Communication::executeCmd);
 
+
+    
+    // Device
+    connect(ui->scan_pushButton, &QPushButton::clicked, this, &MainWindow::resetDeviceList);
     connect(ui->scan_pushButton, &QPushButton::clicked, this, [this] {
         ui->scan_pushButton->setEnabled(false);
         this->resetDeviceList();
         this->communication_->scanForDevices();
     });
+    connect(communication_, &Communication::deviceFound, this, &MainWindow::addDeviceFound);
 
-    connect(ui->scan_pushButton, &QPushButton::clicked, this, &MainWindow::resetDeviceList);
+    // Select device from list
     connect(ui->devices_listWidget, &QListWidget::currentRowChanged, this, &MainWindow::onDeviceListSelectionChanged);
     connect(ui->devices_listWidget, &QListWidget::currentRowChanged, communication_, &Communication::selectDevice);
-    connect(communication_, &Communication::message, this, &MainWindow::displayMessage);
-    connect(communication_, &Communication::deviceFound, this, &MainWindow::addDeviceFound);
+    
+    // Power
     connect(ui->on_radioButton, &QRadioButton::clicked, this, [this] {
         communication_->executeCmd("main/setPower?power=on");
     });
     connect(ui->off_radioButton, &QRadioButton::clicked, this, [this] {
         communication_->executeCmd("main/setPower?power=standby");
     });
+
+    // Feedback from device
     connect(communication_, &Communication::validFeedbackReceived, this, &MainWindow::onMessageReceived);
+    connect(communication_, &Communication::message, this, &MainWindow::displayMessage);
+
+    // Volume
     connect(ui->volume_horizontalScrollBar, &QScrollBar::valueChanged, this, &MainWindow::onVolumeSliderChanged);
 
     connect(ui->volume_up_pushButton, &QPushButton::clicked, this, [this] {
@@ -49,6 +60,19 @@ void MainWindow::buildConnections() {
     connect(ui->volume_down_pushButton, &QPushButton::clicked, this, [this] {
         emit executeCmd("main/setVolume?volume=down");
     });
+    // MUTE
+    connect(ui->unmute_radioButton, &QRadioButton::clicked, this, [this] {
+        emit executeCmd("main/setMute?enable=false");
+    });
+    connect(ui->mute_radioButton, &QRadioButton::clicked, this, [this] {
+        emit executeCmd("main/setMute?enable=true");
+    });
+
+    // Presets
+    connect(ui->preset_listWidget, &QListWidget::currentRowChanged, this, [this](int currentRow) {        
+        emit executeCmd(QString("netusb/recallPreset?zone=%1&num=%2").arg(m_currentzone).arg(currentRow+1));
+    });
+
 }
 
 void MainWindow::displayMessage(const QString& message) {
@@ -103,6 +127,24 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
                 }
             }
         }
+    } else if(request == "netusb/getPresetInfo") {
+        if(message.contains("preset_info") && message.value("preset_info").isArray()) {
+            ui->preset_listWidget->clear();
+            QJsonArray presetInfo = message.value("preset_info").toArray();
+            for (const auto& preset : presetInfo) {
+                ui->preset_listWidget->addItem(preset.toObject().value("text").toString());                
+            }
+        }
+    } else if(request == "netusb/getPlayInfo") {
+        ui->artist_lineEdit->setText(message.value("artist").toString());
+        ui->album_lineEdit->setText(message.value("album").toString());
+        ui->track_lineEdit->setText(message.value("track").toString());
+    } else if(request == "system/getLocationInfo") {
+        auto zoneList = message.value("zone_list");
+    }
+    else 
+    {
+        qDebug() << "Received response for" << request << ":" << message;
     }
 }
 
