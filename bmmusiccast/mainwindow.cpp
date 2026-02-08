@@ -6,11 +6,12 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    auto com = new communication();
+    communication_ = new Communication();
     ui->setupUi(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete communication_;
 }

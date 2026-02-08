@@ -1,11 +1,24 @@
-#include <QObject>
+#ifndef Communication_H
+#define Communication_H
 
-class communication : public QObject
+#include <QObject>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+
+class Communication : public QObject
 {
     Q_OBJECT
 private:
-    /* data */
+    QNetworkAccessManager* networkManager_;
+    QString lastResponseData_;
+    QNetworkReply* lastReply_;
 public:
-    communication(/* args */);
-    ~communication();
+    Communication(/* args */);
+    ~Communication();
+
+public slots:
+    void onFinished(QNetworkReply* reply);
+    
 };
+
+#endif
