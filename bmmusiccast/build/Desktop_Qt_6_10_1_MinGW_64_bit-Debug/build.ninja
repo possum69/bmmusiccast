@@ -73,6 +73,14 @@ build CMakeFiles/bmmusiccast.dir/mainwindow.cpp.obj: CXX_COMPILER__bmmusiccast_u
   OBJECT_DIR = CMakeFiles\bmmusiccast.dir
   OBJECT_FILE_DIR = CMakeFiles\bmmusiccast.dir
 
+build CMakeFiles/bmmusiccast.dir/logic/communication.cpp.obj: CXX_COMPILER__bmmusiccast_unscanned_Debug C$:/dev/bmmusiccast/bmmusiccast/logic/communication.cpp || cmake_object_order_depends_target_bmmusiccast
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\bmmusiccast.dir\logic\communication.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/dev/bmmusiccast/bmmusiccast/build/Desktop_Qt_6_10_1_MinGW_64_bit-Debug/bmmusiccast_autogen/include -isystem C:/Qt/6.10.1/mingw_64/include/QtCore -isystem C:/Qt/6.10.1/mingw_64/include -isystem C:/Qt/6.10.1/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.1/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.1/mingw_64/include/QtGui
+  OBJECT_DIR = CMakeFiles\bmmusiccast.dir
+  OBJECT_FILE_DIR = CMakeFiles\bmmusiccast.dir\logic
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target bmmusiccast
@@ -81,7 +89,7 @@ build CMakeFiles/bmmusiccast.dir/mainwindow.cpp.obj: CXX_COMPILER__bmmusiccast_u
 #############################################
 # Link the executable bmmusiccast.exe
 
-build bmmusiccast.exe: CXX_EXECUTABLE_LINKER__bmmusiccast_Debug CMakeFiles/bmmusiccast.dir/bmmusiccast_autogen/mocs_compilation.cpp.obj CMakeFiles/bmmusiccast.dir/main.cpp.obj CMakeFiles/bmmusiccast.dir/mainwindow.cpp.obj | C$:/Qt/6.10.1/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.10.1/mingw_64/lib/libQt6Gui.a C$:/Qt/6.10.1/mingw_64/lib/libQt6Core.a C$:/Qt/6.10.1/mingw_64/lib/libQt6EntryPoint.a || bmmusiccast_autogen bmmusiccast_autogen_timestamp_deps
+build bmmusiccast.exe: CXX_EXECUTABLE_LINKER__bmmusiccast_Debug CMakeFiles/bmmusiccast.dir/bmmusiccast_autogen/mocs_compilation.cpp.obj CMakeFiles/bmmusiccast.dir/main.cpp.obj CMakeFiles/bmmusiccast.dir/mainwindow.cpp.obj CMakeFiles/bmmusiccast.dir/logic/communication.cpp.obj | C$:/Qt/6.10.1/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.10.1/mingw_64/lib/libQt6Gui.a C$:/Qt/6.10.1/mingw_64/lib/libQt6Core.a C$:/Qt/6.10.1/mingw_64/lib/libQt6EntryPoint.a || bmmusiccast_autogen bmmusiccast_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_FLAGS = -mwindows
   LINK_LIBRARIES = C:/Qt/6.10.1/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.10.1/mingw_64/lib/libQt6Gui.a  C:/Qt/6.10.1/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.10.1/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

@@ -28,6 +28,13 @@
        <item>
         <widget class="QListWidget" name="devices_listWidget"/>
        </item>
+       <item>
+        <widget class="QPushButton" name="scan_pushButton">
+         <property name="text">
+          <string>Scan</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
