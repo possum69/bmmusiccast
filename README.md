@@ -53,3 +53,6 @@ Contributions to the project are welcome! Please follow these guidelines:
 This project is licensed under the MIT license.
 
 Note: This README serves as an initial starting point. As development progresses, it will be updated to reflect changes in project scope, implementation details, and other relevant information.
+
+## Resources
+- https://forum.smartapfel.de/attachment/4358-yamaha-musiccast-http-simplified-api-for-controlsystems-pdf/

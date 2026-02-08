@@ -1,0 +1,262 @@
+{
+    "ccs": {
+        "supported": true
+    },
+    "clock": {
+        "alarm_fade_type_num": 1,
+        "alarm_input_list": [
+            "none",
+            "server",
+            "net_radio",
+            "napster",
+            "spotify",
+            "qobuz",
+            "tidal",
+            "deezer",
+            "amazon_music"
+        ],
+        "alarm_mode_list": ["oneday"],
+        "alarm_preset_list": ["netusb"],
+        "func_list": [
+            "date_and_time",
+            "alarm",
+            "snooze"
+        ],
+        "range_step": [
+            {
+                "id": "alarm_volume",
+                "max": 60,
+                "min": 5,
+                "step": 1
+            },
+            {
+                "id": "alarm_fade",
+                "max": 180,
+                "min": 180,
+                "step": 1
+            }
+        ]
+    },
+    "distribution": {
+        "client_max": 19,
+        "compatible_client": [2],
+        "mc_surround": {
+            "func_list": ["mcss_error_info"],
+            "master_role": {
+                "stereo_pair": true,
+                "subwoofer_pair": true,
+                "surround_pair": false
+            },
+            "slave_role": {
+                "subwoofer_pair": false,
+                "surround_pair_l_or_r": true,
+                "surround_pair_lr": false
+            },
+            "version": 1
+        },
+        "server_zone_list": ["main"],
+        "version": 2
+    },
+    "netusb": {
+        "func_list": [
+            "recent_info",
+            "play_queue",
+            "mc_playlist",
+            "streaming_service_use",
+            "previous_force"
+        ],
+        "mc_playlist": {
+            "num": 5,
+            "size": 200
+        },
+        "net_radio_type": "airable",
+        "play_queue": {
+            "size": 200
+        },
+        "preset": {
+            "num": 40
+        },
+        "qobuz": {
+            "login_type": "oauth"
+        },
+        "recent_info": {
+            "num": 40
+        },
+        "tidal": {
+            "mode": "airable"
+        }
+    },
+    "response_code": 0,
+    "system": {
+        "bluetooth": {
+            "tx_connectivity_type_max": 3,
+            "update_cancelable": true
+        },
+        "func_list": [
+            "wired_lan",
+            "wireless_lan",
+            "network_standby",
+            "bluetooth_tx_setting",
+            "bluetooth_tx_connectivity_type",
+            "dfs_option",
+            "auto_power_standby",
+            "dimmer",
+            "airplay",
+            "background_download",
+            "remote_info",
+            "network_reboot",
+            "system_reboot",
+            "analytics",
+            "terms_of_use"
+        ],
+        "input_list": [
+            {
+                "account_enable": true,
+                "distribution_enable": true,
+                "id": "napster",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": true,
+                "id": "spotify",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": true,
+                "distribution_enable": true,
+                "id": "qobuz",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": true,
+                "distribution_enable": true,
+                "id": "tidal",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": true,
+                "distribution_enable": true,
+                "id": "deezer",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": true,
+                "distribution_enable": true,
+                "id": "amazon_music",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": true,
+                "id": "alexa",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": false,
+                "id": "airplay",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": false,
+                "id": "mc_link",
+                "play_info_type": "netusb",
+                "rename_enable": true
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": true,
+                "id": "server",
+                "play_info_type": "netusb",
+                "rename_enable": true
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": true,
+                "id": "net_radio",
+                "play_info_type": "netusb",
+                "rename_enable": true
+            },
+            {
+                "account_enable": false,
+                "distribution_enable": true,
+                "id": "bluetooth",
+                "play_info_type": "netusb",
+                "rename_enable": false
+            }
+        ],
+        "range_step": [
+            {
+                "id": "dimmer",
+                "max": 2,
+                "min": 0,
+                "step": 1
+            }
+        ],
+        "zone_num": 1
+    },
+    "zone": [
+        {
+            "ccs_supported": ["connected_speaker"],
+            "equalizer_mode_list": ["manual"],
+            "func_list": [
+                "power",
+                "sleep",
+                "volume",
+                "mute",
+                "sound_program",
+                "equalizer",
+                "signal_info",
+                "prepare_input_change",
+                "link_control",
+                "link_audio_delay"
+            ],
+            "id": "main",
+            "input_list": [
+                "napster",
+                "spotify",
+                "qobuz",
+                "tidal",
+                "deezer",
+                "amazon_music",
+                "alexa",
+                "airplay",
+                "mc_link",
+                "server",
+                "net_radio",
+                "bluetooth"
+            ],
+            "link_audio_delay_list": [
+                "audio_sync_on",
+                "balanced",
+                "audio_sync_off"
+            ],
+            "link_control_list": ["speed", "standard", "stability"],
+            "range_step": [
+                {
+                    "id": "volume",
+                    "max": 60,
+                    "min": 0,
+                    "step": 1
+                },
+                {
+                    "id": "equalizer",
+                    "max": 10,
+                    "min": -10,
+                    "step": 1
+                }
+            ],
+            "sound_program_list": ["standard", "bass_booster"]
+        }
+    ]
+}
