@@ -55,10 +55,10 @@ void MainWindow::buildConnections() {
     connect(ui->volume_horizontalScrollBar, &QScrollBar::valueChanged, this, &MainWindow::onVolumeSliderChanged);
 
     connect(ui->volume_up_pushButton, &QPushButton::clicked, this, [this] {
-        emit executeCmd("main/setVolume?volume=up");
+        emit executeCmd(QString("main/setVolume?volume=up&step=%1").arg(ui->step_spinBox->value()));
     });
     connect(ui->volume_down_pushButton, &QPushButton::clicked, this, [this] {
-        emit executeCmd("main/setVolume?volume=down");
+        emit executeCmd(QString("main/setVolume?volume=down&step=%1").arg(ui->step_spinBox->value()));
     });
     // MUTE
     connect(ui->unmute_radioButton, &QRadioButton::clicked, this, [this] {

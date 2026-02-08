@@ -33,6 +33,7 @@ signals:
     void deviceFound(const QJsonObject& deviceInfo, const QHostAddress& addr);
     void addressFound(const QHostAddress& addr);
     void validFeedbackReceived(const QString& request, const QJsonObject& message);
+    void update(const QString& request);
 
 private: // methods
     QList<QHostAddress> getLocalIPAddresses();

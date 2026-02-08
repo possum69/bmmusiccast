@@ -11,7 +11,16 @@
 
 Communication::Communication(/* args */)
 {
+
     networkManager_ = new QNetworkAccessManager();
+    auto* thread = QThread::create([this] {
+        while (true) {
+            emit this->update("netusb/getPlayInfo");
+            QThread::msleep(5000);
+        }
+    });
+    connect(this, &Communication::update, this, &Communication::executeCmd);
+    thread->start();
 }
 
 Communication::~Communication()
@@ -104,7 +113,6 @@ void Communication::selectDevice(int index) {
     //qDebug() << "Selected device index:" << index << "of" << m_devices.size();
     executeCmd("system/getFeatures");
     executeCmd("netusb/getPresetInfo");
-    executeCmd("netusb/getPlayInfo");
     executeCmd("system/getLocationInfo");
 }
 
