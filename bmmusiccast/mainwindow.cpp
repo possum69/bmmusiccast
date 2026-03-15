@@ -80,14 +80,20 @@ void MainWindow::buildConnections() {
         ui->albumArtLabel->setPixmap(pixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     });
 
+    // Artist
+    connect(ui->album_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchArtistImage);
 }
 
 void MainWindow::displayMessage(const QString& message) {
-    ui->statusbar->showMessage(message);
-    //ui->devices_listWidget->addItem(message);
     if (message == "Scan finished.") {
         ui->scan_pushButton->setEnabled(true);
-    }   
+        ui->statusbar->showMessage(message);
+    } else if(message.startsWith("Error")) {
+        ui->statusbar->showMessage(message);
+    } else {
+        //ui->statusbar->showMessage(message);
+        ui->statusbar->showMessage("");
+    }
 }
 
 void MainWindow::addDeviceFound(const QJsonObject& deviceInfo, const QHostAddress& addr)
@@ -144,8 +150,23 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
         }
     } else if(request == "netusb/getPlayInfo") {
         ui->artist_lineEdit->setText(message.value("artist").toString());
-        ui->album_lineEdit->setText(message.value("album").toString());
-        ui->track_lineEdit->setText(message.value("track").toString());
+        auto album = message.value("album").toString();
+        if(album.size() > 0) {
+            ui->album_lineEdit->setText(album);
+            ui->track_lineEdit->setText(message.value("track").toString());
+        } else {
+            auto track = message.value("track").toString();
+            if(track.contains(" - ")) {
+                auto splitted = track.split("-", Qt::SkipEmptyParts);
+                if(splitted.size() > 1) {
+                    ui->album_lineEdit->setText(splitted.at(0).trimmed());
+                    ui->track_lineEdit->setText(splitted.at(1).trimmed());
+                } else {
+                    ui->track_lineEdit->setText(track);
+                }
+            }
+
+        }
         emit fetch(message.value("albumart_url").toString());
     } else if(request == "system/getLocationInfo") {
         auto zoneList = message.value("zone_list");    
@@ -165,7 +186,7 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
     }
     else 
     {
-        qDebug() << "Received response for" << request << ":" << message;
+        //qDebug() << "Received response for" << request << ":" << message;
     }
 }
 

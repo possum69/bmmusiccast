@@ -15,6 +15,7 @@ private: // members
     QList<QHostAddress> m_devices;
     int m_selectedDeviceIndex = -1;
     QString lastAlbumArtUrl = "";
+    QString lastArtist = "";
 
 public: // methods
     Communication(/* args */);
@@ -25,6 +26,7 @@ public slots:
     void selectDevice(int index);
     void executeCmd(const QString& cmd);
     void downloadAlbumArt(const QString &albumart_url);
+    void searchArtistImage(const QString &artist);
 
 private slots:
     void queryDevice(const QHostAddress &addr);

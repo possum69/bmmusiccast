@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QTcpSocket>
 #include <QThread>
 #include <QImage>
@@ -96,11 +97,11 @@ void Communication::queryDevice(const QHostAddress &addr)
                 }                
                 emit deviceFound(doc.object(), addr);
             } else {
-                //emit message(QString("Yamaha device found at %1 (invalid response) %2").arg(addr.toString()).arg(QString(data)));                
+                emit message(QString("Yamaha device found at %1 (invalid response) %2").arg(addr.toString()).arg(QString(data)));
             }
         } else {
             //qDebug() << "Status code for" << addr.toString() << ":" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-            //emit message(QString("Error querying %1: %2").arg(addr.toString()).arg(reply->errorString()));
+            emit message(QString("Error querying %1: %2").arg(addr.toString()).arg(reply->errorString()));
         }
 
         if (--m_pending == 0) {
@@ -119,15 +120,14 @@ void Communication::selectDevice(int index) {
     executeCmd("system/getLocationInfo");
 }
 
-
 void Communication::executeCmd(const QString& cmd)
 {
     if (m_selectedDeviceIndex < 0 || m_selectedDeviceIndex >= m_devices.size()) {
-        emit message("No device selected.");
+        emit message("Error: No device selected.");
         return;
     }
-    emit message(QString("%2 %1...").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd));
-    QUrl url(QString("http://%1/YamahaExtendedControl/v1/%2").arg(m_devices[m_selectedDeviceIndex].toString()).arg(cmd));
+    emit message(QString("%2 %1...").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString(),cmd));
+    QUrl url(QString("http://%1/YamahaExtendedControl/v1/%2").arg(m_devices[m_selectedDeviceIndex].toString(),cmd));
     QNetworkRequest req(url);   
     QNetworkReply *reply = networkManager_->get(req);
     
@@ -145,13 +145,13 @@ void Communication::executeCmd(const QString& cmd)
                     emit message(QString("Command %2 executed successfully on %1").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd));
                     emit validFeedbackReceived(cmd, doc.object());
                 } else {
-                    emit message(QString("Command %2 failed on %1: %3").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd).arg(doc.object().value("response_code").toInt()));
+                    emit message(QString("Error: Command %2 failed on %1: %3").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd).arg(doc.object().value("response_code").toInt()));
                 }
             } else {
-                emit message(QString("Invalid response from %1 for command %2: %3").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd).arg(QString(data)));
+                emit message(QString("Error: Invalid response from %1 for command %2: %3").arg(QHostAddress(m_devices[m_selectedDeviceIndex]).toString()).arg(cmd).arg(QString(data)));
             }
         } else {
-            qDebug() << "Status code for" << m_devices[m_selectedDeviceIndex].toString() << ":" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+            //qDebug() << "Status code for" << m_devices[m_selectedDeviceIndex].toString() << ":" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         }
 
     });
@@ -159,16 +159,16 @@ void Communication::executeCmd(const QString& cmd)
 
 void Communication::downloadAlbumArt(const QString &albumart_url) {
     if (m_selectedDeviceIndex < 0 || m_selectedDeviceIndex >= m_devices.size()) {
-        emit message("No device selected.");
+        emit message("Error: No device selected.");
         return;
     } else if (albumart_url.isEmpty()) {
-        emit message("No album art URL provided.");
+        emit message("Error: No album art URL provided.");
         return;
     } else if (albumart_url == lastAlbumArtUrl) {
-        //emit message("Album art already up to date.");
+        emit message("Album art already up to date.");
         return;
     }
-    qDebug() << "Downloading album art from URL:" << albumart_url;
+    //qDebug() << "Downloading album art from URL:" << albumart_url;
     QUrl url(QString("http://%1%2").arg(m_devices[m_selectedDeviceIndex].toString()).arg(albumart_url));
 
     QNetworkRequest request(url);
@@ -184,5 +184,57 @@ void Communication::downloadAlbumArt(const QString &albumart_url) {
         }
         reply->deleteLater();
     });
+}
+
+void Communication::searchArtistImage(const QString &artist) {
+    if(lastArtist == artist) {
+        return;
+    }
+    lastArtist = artist;
+    QString artistLookup = artist;
+    if(artistLookup.contains(",")) {
+        auto list = artistLookup.split(",");
+        artistLookup = list.at(0);
+    }
+    artistLookup = artistLookup.replace(" ","+");
+    QUrl url(QString("https://api.duckduckgo.com/?q=%1&format=json&iax=images&ia=images").arg(artistLookup));
+
+    QNetworkRequest request(url);
+    auto *reply = networkManager_->get(request);
+    qDebug() << "Searching with " << url;
+    connect(reply, &QNetworkReply::finished, this, [this, reply, artist]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray data = reply->readAll();
+            QJsonDocument doc = QJsonDocument::fromJson(data);
+            QJsonObject root = doc.object();
+
+            QString image = root["Image"].toString();
+            if(image != "") {
+                qDebug() << "Image URL: " << image;
+                QUrl url(QString("https://duckduckgo.com%2").arg(image));
+
+                qDebug() << "Downloading " << url;
+
+                QNetworkRequest request(url);
+                auto *reply = networkManager_->get(request);
+
+                connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+                    if (reply->error() == QNetworkReply::NoError) {
+                        QByteArray data = reply->readAll();
+                        QImage img;
+                        img.loadFromData(data);
+                        emit albumArtReady(img);
+                    }
+                    reply->deleteLater();
+                });
+
+            } else {
+                qDebug() << "Json: " << doc;
+            }
+
+        }
+        reply->deleteLater();
+    });
+
 }
 
