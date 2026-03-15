@@ -70,6 +70,8 @@ void MainWindow::buildConnections() {
     // Presets
     connect(ui->preset_listWidget, &QListWidget::currentRowChanged, this, [this](int currentRow) {        
         ui->albumArtLabel->setText("Album:");
+        ui->album_lineEdit->setText("");
+        ui->track_lineEdit->setText("");
         emit executeCmd(QString("netusb/recallPreset?zone=%1&num=%2").arg(m_currentzone).arg(currentRow+1));
     });
 

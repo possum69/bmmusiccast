@@ -180,6 +180,7 @@ void Communication::downloadAlbumArt(const QString &albumart_url) {
             QImage img;
             img.loadFromData(data, "PNG");
             emit albumArtReady(img);
+            lastAlbumImage = img;
             lastAlbumArtUrl = albumart_url;
         }
         reply->deleteLater();
@@ -197,6 +198,7 @@ void Communication::searchArtistImage(const QString &artist) {
         artistLookup = list.at(0);
     }
     artistLookup = artistLookup.replace(" ","+");
+    artistLookup = artistLookup.replace("&","and");
     QUrl url(QString("https://api.duckduckgo.com/?q=%1&format=json&iax=images&ia=images").arg(artistLookup));
 
     QNetworkRequest request(url);
@@ -230,6 +232,7 @@ void Communication::searchArtistImage(const QString &artist) {
 
             } else {
                 qDebug() << "Json: " << doc;
+                emit albumArtReady(lastAlbumImage);
             }
 
         }

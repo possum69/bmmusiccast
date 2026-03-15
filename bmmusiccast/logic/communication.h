@@ -5,6 +5,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QJsonObject>
+#include <QImage>
 
 class Communication : public QObject
 {
@@ -15,6 +16,7 @@ private: // members
     QList<QHostAddress> m_devices;
     int m_selectedDeviceIndex = -1;
     QString lastAlbumArtUrl = "";
+    QImage lastAlbumImage{};
     QString lastArtist = "";
 
 public: // methods
