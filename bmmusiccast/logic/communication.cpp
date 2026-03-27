@@ -187,11 +187,47 @@ void Communication::downloadAlbumArt(const QString &albumart_url) {
     });
 }
 
+void Communication::searchTrackInfo(const QString &track) {
+    if(lastTrack == track) {
+        return;
+    }
+    emit albumAbstract("");
+    lastTrack = track;
+    QString trackLookup = track;
+    if(trackLookup.contains(",")) {
+        auto list = trackLookup.split(",");
+        trackLookup = list.at(0);
+    }
+    trackLookup = trackLookup.replace(" ","+");
+    trackLookup = trackLookup.replace("&","and");
+    QUrl url(QString("https://api.duckduckgo.com/?q=%1&format=json&iax=images&ia=images").arg(trackLookup));
+
+    QNetworkRequest request(url);
+    auto *reply = networkManager_->get(request);
+    qDebug() << "Searching track with " << url;
+    connect(reply, &QNetworkReply::finished, this, [this, reply, track]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray data = reply->readAll();
+            QJsonDocument doc = QJsonDocument::fromJson(data);
+            QJsonObject root = doc.object();
+
+            //qDebug() << "Json: " << doc;
+
+            QString abstract = root["AbstractText"].toString();
+            if(abstract != "") {
+                emit albumAbstract(abstract);
+            }
+        }
+        reply->deleteLater();
+    });
+}
+
 void Communication::searchArtistImage(const QString &artist) {
     if(lastArtist == artist) {
         return;
     }
     lastArtist = artist;
+    emit albumAbstract("");
     QString artistLookup = artist;
     if(artistLookup.contains(",")) {
         auto list = artistLookup.split(",");
@@ -203,19 +239,26 @@ void Communication::searchArtistImage(const QString &artist) {
 
     QNetworkRequest request(url);
     auto *reply = networkManager_->get(request);
-    qDebug() << "Searching with " << url;
+    qDebug() << "Searching artist with " << url;
     connect(reply, &QNetworkReply::finished, this, [this, reply, artist]() {
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray data = reply->readAll();
             QJsonDocument doc = QJsonDocument::fromJson(data);
             QJsonObject root = doc.object();
 
+            //qDebug() << "Json: " << doc;
+
             QString image = root["Image"].toString();
+            QString abstract = root["AbstractText"].toString();
+            if(abstract != "") {
+                emit albumAbstract(abstract);
+            }
             if(image != "") {
+
                 qDebug() << "Image URL: " << image;
                 QUrl url(QString("https://duckduckgo.com%2").arg(image));
 
-                qDebug() << "Downloading " << url;
+                //qDebug() << "Downloading " << url;
 
                 QNetworkRequest request(url);
                 auto *reply = networkManager_->get(request);
@@ -231,7 +274,7 @@ void Communication::searchArtistImage(const QString &artist) {
                 });
 
             } else {
-                qDebug() << "Json: " << doc;
+                //qDebug() << "Json: " << doc;
                 emit albumArtReady(lastAlbumImage);
             }
 

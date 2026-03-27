@@ -34,6 +34,28 @@ void MainWindow::buildConnections() {
     });
     connect(communication_, &Communication::deviceFound, this, &MainWindow::addDeviceFound);
 
+    connect(ui->checkBox_album_image, &QCheckBox::checkStateChanged, [this](Qt::CheckState state) {
+        disconnect(ui->album_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchArtistImage);
+        disconnect(ui->track_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchTrackInfo);
+
+        if(state == Qt::Checked) {
+            ui->checkBox_track_image->setCheckState(Qt::Unchecked);
+            // Artist
+            connect(ui->album_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchArtistImage);
+            emit ui->album_lineEdit->textChanged(ui->album_lineEdit->text());
+        }
+    });
+    connect(ui->checkBox_track_image, &QCheckBox::checkStateChanged, [this](Qt::CheckState state) {
+        disconnect(ui->album_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchArtistImage);
+        disconnect(ui->track_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchTrackInfo);
+        if(state == Qt::Checked) {
+            ui->checkBox_album_image->setCheckState(Qt::Unchecked);
+            // Artist
+            connect(ui->track_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchArtistImage);
+            emit ui->track_lineEdit->textChanged(ui->track_lineEdit->text());
+        }
+    });
+
     // Select device from list
     connect(ui->devices_listWidget, &QListWidget::currentRowChanged, this, &MainWindow::onDeviceListSelectionChanged);
     connect(ui->devices_listWidget, &QListWidget::currentRowChanged, communication_, &Communication::selectDevice);
@@ -82,8 +104,10 @@ void MainWindow::buildConnections() {
         ui->albumArtLabel->setPixmap(pixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     });
 
-    // Artist
-    connect(ui->album_lineEdit, &QLineEdit::textChanged,communication_,&Communication::searchArtistImage);
+
+    // Abstract
+    connect(communication_, &Communication::albumAbstract, ui->album_plainTextEdit, &QPlainTextEdit::setPlainText);
+    connect(communication_, &Communication::trackAbstract, ui->album_plainTextEdit, &QPlainTextEdit::setPlainText);
 }
 
 void MainWindow::displayMessage(const QString& message) {
@@ -164,7 +188,7 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
                     ui->album_lineEdit->setText(splitted.at(0).trimmed());
                     ui->track_lineEdit->setText(splitted.at(1).trimmed());
                 } else {
-                    ui->track_lineEdit->setText(track);
+                    ui->track_lineEdit->setText(track.trimmed());
                 }
             }
 

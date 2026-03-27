@@ -17,7 +17,7 @@ private: // members
     int m_selectedDeviceIndex = -1;
     QString lastAlbumArtUrl = "";
     QImage lastAlbumImage{};
-    QString lastArtist = "";
+    QString lastArtist = "", lastTrack= "";
 
 public: // methods
     Communication(/* args */);
@@ -29,6 +29,7 @@ public slots:
     void executeCmd(const QString& cmd);
     void downloadAlbumArt(const QString &albumart_url);
     void searchArtistImage(const QString &artist);
+    void searchTrackInfo(const QString &track);
 
 private slots:
     void queryDevice(const QHostAddress &addr);
@@ -40,7 +41,10 @@ signals:
     void addressFound(const QHostAddress& addr);
     void validFeedbackReceived(const QString& request, const QJsonObject& message);
     void update(const QString& request);
-    void albumArtReady(const QImage &image);
+    void albumArtReady(const QImage &);
+    void albumAbstract(const QString &);
+    void trackAbstract(const QString &);
+
 
 private: // methods
     QList<QHostAddress> getLocalIPAddresses();
