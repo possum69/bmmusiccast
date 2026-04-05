@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "newstation.h"
 #include "logic/communication.h"
 #include <QJsonObject>
 #include <QJsonArray>
@@ -22,6 +23,10 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::buildConnections() {
+    QAction *newStation = new QAction("New Station...", this);
+    ui->menuEdit->addAction(newStation);
+    connect(newStation, &QAction::triggered, this, &MainWindow::openNewStationDialog);
+
     // General
     connect(this, &MainWindow::executeCmd, communication_, &Communication::executeCmd);
    
@@ -101,13 +106,24 @@ void MainWindow::buildConnections() {
     connect(this, &MainWindow::fetch, communication_, &Communication::downloadAlbumArt);
     connect(communication_, &Communication::albumArtReady, this, [this](const QImage &img) {
         QPixmap pixmap = QPixmap::fromImage(img);
-        ui->albumArtLabel->setPixmap(pixmap.scaled(300, 300, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        auto width = ui->album_lineEdit->geometry().width();
+        ui->albumArtLabel->setPixmap(pixmap.scaled(width, width, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     });
 
 
     // Abstract
     connect(communication_, &Communication::albumAbstract, ui->album_plainTextEdit, &QPlainTextEdit::setPlainText);
     connect(communication_, &Communication::trackAbstract, ui->album_plainTextEdit, &QPlainTextEdit::setPlainText);
+
+    // Add
+    connect(ui->addWebRadio_pushButton, &QPushButton::clicked, [this]() {
+        auto url = ui->webradiourl_lineEdit->text();
+        auto index = ui->preset_listWidget->count();
+        if (index >= m_maxPreset) {
+            index = m_maxPreset;
+        }
+        communication_->addFavorit(index, url);
+    });
 }
 
 void MainWindow::displayMessage(const QString& message) {
@@ -170,8 +186,12 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
         if(message.contains("preset_info") && message.value("preset_info").isArray()) {
             ui->preset_listWidget->clear();
             QJsonArray presetInfo = message.value("preset_info").toArray();
+            m_maxPreset = presetInfo.size();
             for (const auto& preset : presetInfo) {
-                ui->preset_listWidget->addItem(preset.toObject().value("text").toString());                
+                auto itemText = preset.toObject().value("text").toString();
+                if(itemText.size() > 0) {
+                    ui->preset_listWidget->addItem(itemText);
+                }
             }
         }
     } else if(request == "netusb/getPlayInfo") {
@@ -218,4 +238,10 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
 
 void MainWindow::onVolumeSliderChanged(int value) {
     emit executeCmd(QString("main/setVolume?volume=%1").arg(value));
+}
+
+void MainWindow::openNewStationDialog() {
+    auto dialog = newstation();
+    dialog.exec();
+    ui->webradiourl_lineEdit->setText(dialog.selectedUrl);
 }

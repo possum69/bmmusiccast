@@ -37,6 +37,12 @@
        </item>
        <item>
         <widget class="QLabel" name="preset_label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>Presets:</string>
          </property>
@@ -45,79 +51,21 @@
        <item>
         <widget class="QListWidget" name="preset_listWidget"/>
        </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QWidget" name="right_widget" native="true">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="right_label">
+        <widget class="QLabel" name="add_webradio_label">
          <property name="text">
-          <string>Device:</string>
+          <string>Add Web-Radio:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="name_widget" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLabel" name="name_label">
-            <property name="text">
-             <string>Name:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="name_lineEdit">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <widget class="QLineEdit" name="webradiourl_lineEdit"/>
        </item>
        <item>
-        <widget class="QGroupBox" name="playinfo_groupBox">
-         <property name="title">
-          <string>Play Info:</string>
+        <widget class="QPushButton" name="addWebRadio_pushButton">
+         <property name="text">
+          <string>Add Web-Radio</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <widget class="QLineEdit" name="artist_lineEdit"/>
-          </item>
-          <item>
-           <widget class="QLabel" name="albumArtLabel">
-            <property name="text">
-             <string>Album:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="album_lineEdit"/>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_album_image">
-            <property name="text">
-             <string>Search</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="track_lineEdit"/>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_track_image">
-            <property name="text">
-             <string>Search</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPlainTextEdit" name="album_plainTextEdit"/>
-          </item>
-         </layout>
         </widget>
        </item>
        <item>
@@ -218,6 +166,81 @@
       </layout>
      </widget>
     </item>
+    <item>
+     <widget class="QWidget" name="right_widget" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="right_label">
+         <property name="text">
+          <string>Device:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="name_widget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="name_label">
+            <property name="text">
+             <string>Name:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="name_lineEdit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="playinfo_groupBox">
+         <property name="title">
+          <string>Play Info:</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLineEdit" name="artist_lineEdit"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="albumArtLabel">
+            <property name="text">
+             <string>Album:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="album_lineEdit"/>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_album_image">
+            <property name="text">
+             <string>Search image for</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="track_lineEdit"/>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_track_image">
+            <property name="text">
+             <string>Search image for</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPlainTextEdit" name="album_plainTextEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -243,7 +266,13 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuHilfe"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

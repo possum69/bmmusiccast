@@ -284,3 +284,8 @@ void Communication::searchArtistImage(const QString &artist) {
 
 }
 
+void Communication::addFavorit(int index, QString favorit) {
+    auto cmd = QString("netusb/setListControl?type=add&index=%1&url=%2").arg(index).arg(favorit);
+    executeCmd(cmd);
+    executeCmd("netusb/getPresetInfo");
+}

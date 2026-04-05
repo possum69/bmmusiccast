@@ -29,7 +29,8 @@ private slots:
     void resetDeviceList();
     void onDeviceListSelectionChanged(int currentRow);
     void onVolumeSliderChanged(int value);
-    
+    void openNewStationDialog();
+
 signals:
     void executeCmd(const QString& cmd);
     void fetch(const QString& albumart_url);
@@ -39,5 +40,6 @@ private:
     Communication* communication_;
     void buildConnections();
     QString m_currentzone = "main";
+    int m_maxPreset = 20;
 };
 #endif // MAINWINDOW_H
