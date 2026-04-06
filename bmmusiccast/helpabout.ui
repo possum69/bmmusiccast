@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HelpAbout</class>
+ <widget class="QDialog" name="HelpAbout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>About</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="title_label">
+     <property name="text">
+      <string>My MusicCast Controller</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPlainTextEdit" name="about_plainTextEdit">
+     <property name="plainText">
+      <string>Kleines Programm um MusicCast Devices im lokalen Netz zu finden und ein paar Einstellungen vorzunehmen.
+
+- On / Standby
+- Auswahl von Presets
+- Volume
+
+Die App zeigt weiterhin die PlayInfo an. Der &quot;track&quot; wird dabei bei &quot; - &quot; gesplittet und separat angezeigt.
+Nach den zwei Teilen kann man im Internet via duckduckgo-API suchen lassen. Dabei wird ein gefundenes &quot;Image&quot; und der &quot;Abstract&quot; angezeigt.
+
+Todos:
+- Support of non NetRadio Presets (I have non)
+- Editing of Presets (API supports only clear and move, searching and adding via airable )
+- Selection of other Source (e.g. Server, Bluetooth, etc.)
+- Save and Read Settings (e.g. prefered device)
+- Other features</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="author_label">
+     <property name="text">
+      <string>Autor: Bernd Mattern, 2026</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

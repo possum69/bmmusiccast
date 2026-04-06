@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "newstation.h"
 #include "logic/communication.h"
 #include <QJsonObject>
 #include <QJsonArray>
+#include "helpabout.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     buildConnections();
     emit ui->scan_pushButton->clicked(); // trigger initial scan
+
+    auto about = new HelpAbout();
+    auto aboutAction = new QAction("About...");
+    ui->menuHilfe->addAction(aboutAction);
+    connect(aboutAction, &QAction::triggered, about, &QDialog::exec);
 }
 
 MainWindow::~MainWindow()
@@ -23,10 +28,6 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::buildConnections() {
-    QAction *newStation = new QAction("New Station...", this);
-    ui->menuEdit->addAction(newStation);
-    connect(newStation, &QAction::triggered, this, &MainWindow::openNewStationDialog);
-
     // General
     connect(this, &MainWindow::executeCmd, communication_, &Communication::executeCmd);
    
@@ -115,15 +116,6 @@ void MainWindow::buildConnections() {
     connect(communication_, &Communication::albumAbstract, ui->album_plainTextEdit, &QPlainTextEdit::setPlainText);
     connect(communication_, &Communication::trackAbstract, ui->album_plainTextEdit, &QPlainTextEdit::setPlainText);
 
-    // Add
-    connect(ui->addWebRadio_pushButton, &QPushButton::clicked, [this]() {
-        auto url = ui->webradiourl_lineEdit->text();
-        auto index = ui->preset_listWidget->count();
-        if (index >= m_maxPreset) {
-            index = m_maxPreset;
-        }
-        communication_->addFavorit(index, url);
-    });
 }
 
 void MainWindow::displayMessage(const QString& message) {
@@ -134,7 +126,7 @@ void MainWindow::displayMessage(const QString& message) {
         ui->statusbar->showMessage(message);
     } else {
         //ui->statusbar->showMessage(message);
-        ui->statusbar->showMessage("");
+        //ui->statusbar->showMessage("");
     }
 }
 
@@ -148,6 +140,12 @@ void MainWindow::addDeviceFound(const QJsonObject& deviceInfo, const QHostAddres
         }
     }
     ui->devices_listWidget->addItem(displayName);
+
+    auto count = ui->devices_listWidget->count();
+    auto policy = ui->devices_listWidget->sizePolicy();
+    policy.setVerticalStretch(count);
+    ui->devices_listWidget->setSizePolicy(policy);
+
 }
 
 void MainWindow::resetDeviceList() {
@@ -193,6 +191,10 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
                     ui->preset_listWidget->addItem(itemText);
                 }
             }
+            auto count = ui->preset_listWidget->count();
+            auto policy = ui->preset_listWidget->sizePolicy();
+            policy.setVerticalStretch(count);
+            ui->preset_listWidget->setSizePolicy(policy);
         }
     } else if(request == "netusb/getPlayInfo") {
         ui->artist_lineEdit->setText(message.value("artist").toString());
@@ -203,7 +205,7 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
         } else {
             auto track = message.value("track").toString();
             if(track.contains(" - ")) {
-                auto splitted = track.split("-", Qt::SkipEmptyParts);
+                auto splitted = track.split(" - ", Qt::SkipEmptyParts);
                 if(splitted.size() > 1) {
                     ui->album_lineEdit->setText(splitted.at(0).trimmed());
                     ui->track_lineEdit->setText(splitted.at(1).trimmed());
@@ -211,7 +213,6 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
                     ui->track_lineEdit->setText(track.trimmed());
                 }
             }
-
         }
         emit fetch(message.value("albumart_url").toString());
     } else if(request == "system/getLocationInfo") {
@@ -238,10 +239,4 @@ void MainWindow::onMessageReceived(const QString& request, const QJsonObject& me
 
 void MainWindow::onVolumeSliderChanged(int value) {
     emit executeCmd(QString("main/setVolume?volume=%1").arg(value));
-}
-
-void MainWindow::openNewStationDialog() {
-    auto dialog = newstation();
-    dialog.exec();
-    ui->webradiourl_lineEdit->setText(dialog.selectedUrl);
 }

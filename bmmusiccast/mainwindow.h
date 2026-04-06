@@ -29,7 +29,6 @@ private slots:
     void resetDeviceList();
     void onDeviceListSelectionChanged(int currentRow);
     void onVolumeSliderChanged(int value);
-    void openNewStationDialog();
 
 signals:
     void executeCmd(const QString& cmd);

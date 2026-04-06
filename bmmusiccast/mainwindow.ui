@@ -26,7 +26,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="devices_listWidget"/>
+        <widget class="QListWidget" name="devices_listWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>2</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="scan_pushButton">
@@ -49,22 +56,12 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="preset_listWidget"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="add_webradio_label">
-         <property name="text">
-          <string>Add Web-Radio:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="webradiourl_lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="addWebRadio_pushButton">
-         <property name="text">
-          <string>Add Web-Radio</string>
+        <widget class="QListWidget" name="preset_listWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>40</verstretch>
+          </sizepolicy>
          </property>
         </widget>
        </item>
@@ -256,15 +253,12 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionSetting"/>
-    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHilfe">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">

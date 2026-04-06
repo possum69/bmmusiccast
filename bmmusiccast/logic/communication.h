@@ -30,8 +30,6 @@ public slots:
     void downloadAlbumArt(const QString &albumart_url);
     void searchArtistImage(const QString &artist);
     void searchTrackInfo(const QString &track);
-    void addFavorit(int, QString);
-
 
 private slots:
     void queryDevice(const QHostAddress &addr);

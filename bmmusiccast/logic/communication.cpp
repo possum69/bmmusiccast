@@ -239,7 +239,7 @@ void Communication::searchArtistImage(const QString &artist) {
 
     QNetworkRequest request(url);
     auto *reply = networkManager_->get(request);
-    qDebug() << "Searching artist with " << url;
+    //qDebug() << "Searching artist with " << url;
     connect(reply, &QNetworkReply::finished, this, [this, reply, artist]() {
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray data = reply->readAll();
@@ -254,8 +254,7 @@ void Communication::searchArtistImage(const QString &artist) {
                 emit albumAbstract(abstract);
             }
             if(image != "") {
-
-                qDebug() << "Image URL: " << image;
+                //qDebug() << "Image URL: " << image;
                 QUrl url(QString("https://duckduckgo.com%2").arg(image));
 
                 //qDebug() << "Downloading " << url;
@@ -282,10 +281,4 @@ void Communication::searchArtistImage(const QString &artist) {
         reply->deleteLater();
     });
 
-}
-
-void Communication::addFavorit(int index, QString favorit) {
-    auto cmd = QString("netusb/setListControl?type=add&index=%1&url=%2").arg(index).arg(favorit);
-    executeCmd(cmd);
-    executeCmd("netusb/getPresetInfo");
 }
